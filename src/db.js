@@ -56,9 +56,14 @@ class Datastore {
     if (this._cache) {
       this._cache.get([namespace, key].join('/'), (err, val) => {
         if (!err)
-          return Promise.resolve(val)
+          return Promise.resolve(JSON.parse(val))
       })
     }
+  }
+
+  _cacheEntity = (namespace, key, doc) => {
+    if (this._cache)
+      this._cache.set([namespace, key].join('/'), JSON.stringify(doc))
   }
 
   dumpIndex = (namespace) => {
@@ -102,6 +107,10 @@ class Datastore {
       return cached
 
     return this._storage.readDoc(this._bucket, fullKey)
+      .then(res => {
+        this._cacheEntity(namespace, key, res)
+        return res
+      })
   }
 
   index = (namespace, doc) => {

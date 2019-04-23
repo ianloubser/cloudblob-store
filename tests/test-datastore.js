@@ -74,7 +74,9 @@ describe('Datastore', () => {
   describe('read', () => {
     const s3 = new AWS()
     const namespaces = {user: new Elasticlunr(['name'], '_id')}
-    sinon.stub(s3, 'readDoc')
+    sinon.stub(s3, 'readDoc').callsFake(() => {
+      return Promise.resolve()
+    })
     const db = new Datastore({db: 'example', storage: s3, namespaces})
 
     it('should call storage backend', () => {
