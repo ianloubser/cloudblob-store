@@ -52,7 +52,7 @@ class Elasticlunr {
     return this._index.toJSON()
   }
 
-  add = (ref, doc) => {
+  add = (doc) => {
     this._dirty = true
     return this._index.addDoc(doc)
   }

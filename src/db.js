@@ -11,6 +11,8 @@ class Datastore {
       throw Error("Expected 'db' name to be specified")
 
     this._bucket = db
+
+    this._cache = clean.cache
     
     if (clean.storage)
       this._storage = clean.storage
@@ -50,6 +52,15 @@ class Datastore {
     return uuidParse.parse(uuid4(), Buffer.alloc(16)).toString('hex')
   }
 
+  _loadFromCache = (namespace, key) => {
+    if (this._cache) {
+      this._cache.get([namespace, key].join('/'), (err, val) => {
+        if (!err)
+          return Promise.resolve(val)
+      })
+    }
+  }
+
   dumpIndex = (namespace) => {
     if (Object.keys(this._indexer).indexOf(namespace)<0)
       throw Error(`No indexer for namespace '${namespace}' defined`)
@@ -85,21 +96,38 @@ class Datastore {
 
   read = (namespace, key) => {
     const fullKey = this._storage._buildKey(namespace, key)
+    const cached = this._loadFromCache(namespace, key)
+    
+    if (cached)
+      return cached
+
     return this._storage.readDoc(this._bucket, fullKey)
   }
 
-  index = (namespace, key, doc) => {
+  index = (namespace, doc) => {
     const self = this
-    return this.loadIndex(namespace).then(() => self._indexer[namespace].add(key, doc))
+    return this.loadIndex(namespace).then(() => self._indexer[namespace].add(doc))
   }
 
   filter = (namespace, query, keysOnly=true) => {
     const self = this
-    return this.loadIndex(namespace).then(() => self._indexer[namespace].search(query))
+    
+    return this.loadIndex(namespace).then(() => {
+      return {'results': self._indexer[namespace].search(query)}
+    })
   }
 
-  list = (namespace) => {
-    return this._storage.listDocs(this._bucket, namespace)
+  list = (namespace, max) => {
+    return this._storage.listDocs(this._bucket, namespace, max).then(res => {
+      let getKeys = res.results.map(key => this.read(namespace, key))
+      
+      return Promise.all(getKeys).then(data => {
+        return {
+          next: data.NextContinuationToken, 
+          results: data
+        }
+      })
+    })
   }
 }
 

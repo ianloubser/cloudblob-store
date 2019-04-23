@@ -20,16 +20,6 @@ class StorageBackend {
 
     return pre.join("/")
   }
-
-  readDoc = (bucket, key) => {
-    // nothing to do here
-    return null
-  }
-
-  writeDoc = (bucket, key, doc) => {
-    // nothing to do here
-    return null
-  }
 }
 
 class AWS extends StorageBackend {
@@ -60,22 +50,14 @@ class AWS extends StorageBackend {
       })
   }
 
-  listDocs = (bucket, namespace) => {
-    return this._connection.listObjectsV2({Bucket: bucket, Prefix: namespace}).promise()
-    .then(data => {
-      let getKeys = []
-      // get the cursor for next page iteration
-      for (let c in data.Contents) {
-        getKeys.push(this.readDoc(bucket, data.Contents[c].Key))
-      }
-
-      return Promise.all(getKeys).then(data => {
+  listDocs = (bucket, namespace, max) => {
+    return this._connection.listObjectsV2({Bucket: bucket, Prefix: namespace, MaxKeys:max}).promise()
+      .then(data => {
         return {
           next: data.NextContinuationToken, 
-          results: data
+          results: data.Contents.map(item => item.Key)
         }
       })
-    })
   }
 }
 

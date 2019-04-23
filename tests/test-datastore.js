@@ -141,9 +141,9 @@ describe('Datastore', () => {
     sinon.stub(db._indexer.user, 'add')
 
     it('should call index backend add', () => {
-      return db.index('user', 'doc_key', user).then(res => {
+      return db.index('user', user).then(res => {
         db._indexer.user.add.should.have.callCount(1)
-        db._indexer.user.add.should.have.been.calledWith('doc_key', user)
+        db._indexer.user.add.should.have.been.calledWith(user)
       })
     })
 
@@ -183,7 +183,9 @@ describe('Datastore', () => {
 
   describe('list', () => {
     const db = new Datastore({db: 'example'})
-    sinon.stub(db._storage, 'listDocs')
+    sinon.stub(db._storage, 'listDocs').callsFake(() => {
+      return Promise.resolve({results: []})
+    })
 
     it('should call storage backend listDocs', () => {
       db.list('users')
