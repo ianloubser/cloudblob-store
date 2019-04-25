@@ -76,6 +76,18 @@ class AWS extends StorageBackend {
     return null
   }
 
+  headDoc = (bucket, key) => {
+    return new Promise((resolve, reject) => {
+      this._connection.headObject({Key: key, Bucket: bucket}, (err, data) => {
+        if (data) {
+          resolve(true)
+        } else{
+          resolve(false)
+        }
+      })
+    })
+  }
+
   readDoc = (bucket, key) => {
     return this._connection.getObject({Key: key, Bucket: bucket}).promise()
       .then((data) => {

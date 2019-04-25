@@ -1,9 +1,13 @@
-import {AWS, MockStore} from './storage'
+import {MockStore} from './storage'
 import uuid4 from 'uuid/v4'
 import uuidParse from 'uuid-parse'
 
 class Datastore {
 
+  /**
+   * Create a datastore intance
+   * @param {Object} params 
+   */
   constructor(params={}) {
     const {db, ...clean} = params
 
@@ -128,11 +132,14 @@ class Datastore {
 
   exists = (namespace, key) => {
     // return a check for entity existence
+    const fullKey = this._storage._buildKey(namespace, key)
+    return this._storage.headDoc(this._bucket, fullKey)
   }
 
   /**
    * Saves a provided document under specified namespace. Optionally override key
-   * generation with pre-generated key.
+   * generation with pre-generated key. Yes this is actually useful, it's used for 
+   * the clob-server-auth package to enforce unique email users.
    * 
    * @param {String} namespace Namespace to store document
    * @param {String} doc The document object to serialize and store
@@ -142,12 +149,12 @@ class Datastore {
   put = (namespace, doc, key) => {
     // there can be some use cases where a user would want to manage reference theirself
     let _id = key
-    if (!_id)
-     _id = this._generateId()
+    if (!_id) {
+      _id = this._generateId()
+      doc[this._indexer[namespace]._ref] = _id
+    }
 
     const fullKey = this._storage._buildKey(namespace, _id)
-    doc[this._indexer[namespace]._ref] = _id
-    
     return this._storage.writeDoc(this._bucket, fullKey, doc)
   }
 
