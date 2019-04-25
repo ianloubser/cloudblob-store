@@ -68,6 +68,14 @@ class AWS extends StorageBackend {
     return new S3(config)
   }
 
+  _getKeyFromPath = (path) => {
+    let k = path.split('/')
+    if (k.length>1)
+      return k[k.length-2]
+    
+    return null
+  }
+
   readDoc = (bucket, key) => {
     return this._connection.getObject({Key: key, Bucket: bucket}).promise()
       .then((data) => {
@@ -95,7 +103,7 @@ class AWS extends StorageBackend {
       .then(data => {
         return {
           next: data.NextContinuationToken, 
-          results: data.Contents.map(item => item.Key)
+          results: data.Contents.map(item => this._getKeyFromPath(item.Key))
         }
       })
   }

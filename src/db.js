@@ -132,7 +132,7 @@ class Datastore {
 
   list = (namespace, max) => {
     return this._storage.listDocs(this._bucket, namespace, max).then(res => {
-      let getKeys = res.results.map(key => this.read(namespace, key))
+      let getKeys = res.results.map(key => this.get(namespace, key))
       
       return Promise.all(getKeys).then(data => {
         return {
