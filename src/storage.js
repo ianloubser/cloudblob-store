@@ -22,6 +22,46 @@ class StorageBackend {
   }
 }
 
+
+/**
+ * Mock store for testing.
+ */
+class MockStore extends StorageBackend {
+  constructor(params={}) {
+    super(params)
+    this._mock = {}
+  }
+
+  _getConnection = (config) => {
+    return null
+  }
+
+  writeDoc = (bucket, key, doc) => {
+    if (!this._mock[bucket])
+      this._mock[bucket] = {}
+
+    this._mock[bucket][key] = doc
+    return Promise.resolve(doc)
+  }
+
+  readDoc = (bucket, key) => {
+    if (this._mock[bucket] && this._mock[bucket][key]) {
+      return Promise.resolve(this._mock[bucket][key])
+    } else
+      return Promise.resolve({})
+  }
+
+  listDocs = (bucket, prefix, max) => {
+    const data = this._mock
+    // Object.entries(this)
+    return Promise.resolve({
+      next: null,
+      results: data
+    })
+  }
+
+}
+
 class AWS extends StorageBackend {
 
   _getConnection = (config) => {
@@ -71,5 +111,5 @@ class Google extends StorageBackend {
 
 
 export {
-  StorageBackend, AWS, Google, Azure
+  StorageBackend, MockStore, AWS, Google, Azure
 }

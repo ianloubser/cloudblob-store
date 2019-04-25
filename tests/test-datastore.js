@@ -2,7 +2,7 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import chai, { expect } from 'chai'
 import Datastore from '../src/db';
-import { AWS } from '../src/storage'
+import { AWS, MockStore } from '../src/storage'
 import { Elasticlunr } from '../src/indexer'
 
 chai.should();
@@ -13,7 +13,7 @@ describe('Datastore', () => {
 
   describe('constructor', () => {
     it('constructor overrides', () => {
-      class Example extends AWS {}
+      class Example extends MockStore {}
       class Indexer extends Elasticlunr {}
 
       let ex = new Example()
@@ -36,7 +36,7 @@ describe('Datastore', () => {
       expect(db._bucket).to.be.equal('someDB')
       
       // check storage defaults
-      expect(db._storage.constructor.name).to.be.equal('AWS')
+      expect(db._storage.constructor.name).to.be.equal('MockStore')
 
       // check indexer defaults
       expect(db._indexer).to.be.empty
@@ -49,7 +49,7 @@ describe('Datastore', () => {
     })
   })
 
-  describe('write', () => {
+  describe('put', () => {
     const s3 = new AWS()
     const namespaces = {user: new Elasticlunr(['name'], '_id')}
     sinon.stub(s3, 'writeDoc')
@@ -57,21 +57,21 @@ describe('Datastore', () => {
 
     it('should call storage backend', () => {
       let user = {id: 1, name: 'john', surname: 'doe', age: '28'}
-      db.write('user', user, user.id)
+      db.put('user', user, user.id)
 
       s3.writeDoc.should.have.callCount(1)
     })
 
     it('should generate correct key', () => {
       let user = {id: 1, name: 'john', surname: 'doe', age: '28'}
-      db.write('user', user, user.id)
+      db.put('user', user, user.id)
 
       let expectedKey = 'user/1/entity.json'
       s3.writeDoc.should.have.been.calledWith('example', expectedKey, user)
     })
   })
 
-  describe('read', () => {
+  describe('get', () => {
     const s3 = new AWS()
     const namespaces = {user: new Elasticlunr(['name'], '_id')}
     sinon.stub(s3, 'readDoc').callsFake(() => {
@@ -80,12 +80,12 @@ describe('Datastore', () => {
     const db = new Datastore({db: 'example', storage: s3, namespaces})
 
     it('should call storage backend', () => {
-      db.read('user', 1)
+      db.get('user', 1)
       s3.readDoc.should.have.callCount(1)
     })
 
     it('should generate correct key', () => {
-      db.read('user', 1)
+      db.get('user', 1)
       let expectedKey = 'user/1/entity.json'
       s3.readDoc.should.have.been.calledWith('example', expectedKey)
     })

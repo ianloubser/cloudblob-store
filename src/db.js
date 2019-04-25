@@ -1,4 +1,4 @@
-import {AWS} from './storage'
+import {AWS, MockStore} from './storage'
 import uuid4 from 'uuid/v4'
 import uuidParse from 'uuid-parse'
 
@@ -17,7 +17,7 @@ class Datastore {
     if (clean.storage)
       this._storage = clean.storage
     else
-      this._storage = new AWS({bucket: db})
+      this._storage = new MockStore()
 
     this._storage.initConnection()
 
@@ -87,7 +87,11 @@ class Datastore {
       this._indexer[namespace].reset()
   }
 
-  write = (namespace, doc, key) => {
+  exists = (namespace, key) => {
+    // return a check for entity existence
+  }
+
+  put = (namespace, doc, key) => {
     // there can be some use cases where a user would want to manage reference theirself
     let _id = key
     if (!_id)
@@ -99,7 +103,7 @@ class Datastore {
     return this._storage.writeDoc(this._bucket, fullKey, doc)
   }
 
-  read = (namespace, key) => {
+  get = (namespace, key) => {
     const fullKey = this._storage._buildKey(namespace, key)
     const cached = this._loadFromCache(namespace, key)
     
