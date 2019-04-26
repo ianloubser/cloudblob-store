@@ -15,8 +15,14 @@ class Datastore {
       throw Error("Expected 'db' name to be specified")
 
     this._bucket = db
+    this._cacheExpiry = 60 * 60 // 1 hour
 
-    this._cache = clean.cache
+    if (clean.cache && clean.cache.client) {
+      this._cache = clean.cache.client
+      if (clean.cache.expiry)
+        this._cacheExpiry = clean.cache.expiry
+    } else
+      this._cache = clean.cache
     
     if (clean.storage)
       this._storage = clean.storage
@@ -91,9 +97,9 @@ class Datastore {
    * @param {String} key The key of the entity
    * @param {Object} doc The raw object as stored to cache
    */
-  _cacheEntity = (namespace, key, doc) => {
+  cacheEntity = (namespace, key, doc) => {
     if (this._cache)
-      this._cache.set([namespace, key].join('/'), JSON.stringify(doc))
+      this._cache.set([namespace, key].join('/'), JSON.stringify(doc), this._cacheExpiry)
   }
 
   /**
@@ -175,7 +181,7 @@ class Datastore {
 
     return this._storage.readDoc(this._bucket, fullKey)
       .then(res => {
-        this._cacheEntity(namespace, key, res)
+        this.cacheEntity(namespace, key, res)
         return res
       })
   }
