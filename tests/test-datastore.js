@@ -18,15 +18,15 @@ describe('Datastore', () => {
 
       let ex = new Example()
       let namespaces = {
-        model: new Indexer()
+        model: {indexer: new Indexer()}
       }
       let db = new Datastore({db: 'example-db', storage: ex, namespaces})
 
       expect(db._bucket).to.be.equal('example-db')
       expect(db._storage.constructor.name).to.be.equal('Example')
 
-      expect(db._indexer.model).to.not.be.undefined
-      expect(db._indexer.model).to.be.instanceOf(Indexer)
+      expect(db.namespaces.model.indexer).to.not.be.undefined
+      expect(db.namespaces.model.indexer).to.be.instanceOf(Indexer)
     })
   
     it('default constructor values', () => {
@@ -39,7 +39,7 @@ describe('Datastore', () => {
       expect(db._storage.constructor.name).to.be.equal('MockStore')
 
       // check indexer defaults
-      expect(db._indexer).to.be.empty
+      expect(db.namespaces).to.be.empty
     })
 
     it('throws error if bucket not specified', () => {
@@ -51,7 +51,7 @@ describe('Datastore', () => {
 
   describe('put', () => {
     const s3 = new AWS()
-    const namespaces = {user: new Elasticlunr(['name'], '_id')}
+    const namespaces = {user: {indexer: new Elasticlunr(['name'], '_id')}}
     sinon.stub(s3, 'writeDoc')
     const db = new Datastore({db: 'example', storage: s3, namespaces})
 
@@ -73,7 +73,7 @@ describe('Datastore', () => {
 
   describe('get', () => {
     const s3 = new AWS()
-    const namespaces = {user: new Elasticlunr(['name'], '_id')}
+    const namespaces = {user: {indexer: new Elasticlunr(['name'], '_id')}}
     sinon.stub(s3, 'readDoc').callsFake(() => {
       return Promise.resolve()
     })
@@ -95,7 +95,7 @@ describe('Datastore', () => {
     let db = null;
     
     beforeEach(() => {
-      const namespaces = {user: new Elasticlunr(['name'], '_id')}
+      const namespaces = {user: {indexer: new Elasticlunr(['name'], '_id')}}
       db = new Datastore({db: 'example', namespaces})
       sinon.stub(db._storage, 'readDoc').callsFake(() => {
         return Promise.resolve({})
@@ -104,21 +104,21 @@ describe('Datastore', () => {
 
     it('should lazyload the index on index add', () => {
       // make sure we are starting with a clean slate
-      expect(db._indexer.user._index).to.be.null
+      expect(db.namespaces.user.indexer._index).to.be.null
 
       return db.index('user', 'doc_key', {}).then((res) => {
         db._storage.readDoc.should.have.callCount(1)
-        expect(db._indexer.user._index).to.not.be.null
+        expect(db.namespaces.user.indexer._index).to.not.be.null
       })
     })
 
     it('should lazyload the index on filter call', () => {
       // make sure we are starting with a clean slate
-      expect(db._indexer.user._index).to.be.null
+      expect(db.namespaces.user.indexer._index).to.be.null
 
       return db.filter('user', 'some query').then((res) => {
         db._storage.readDoc.should.have.callCount(1)
-        expect(db._indexer.user._index).to.not.be.null
+        expect(db.namespaces.user.indexer._index).to.not.be.null
       })
     })
 
@@ -136,16 +136,16 @@ describe('Datastore', () => {
 
   describe('index', () => {
     const user = {id: 1, name: 'john', surname: 'doe', age: '28'}
-    const namespaces = {user: new Elasticlunr(['name'], '_id')}
+    const namespaces = {user: {indexer: new Elasticlunr(['name'], '_id')}}
     const db = new Datastore({db: 'example', namespaces})
     // stub the index load aws call
     sinon.stub(db._storage, 'readDoc').callsFake(() => Promise.resolve({}))
-    sinon.stub(db._indexer.user, 'add')
+    sinon.stub(db.namespaces.user.indexer, 'add')
 
     it('should call index backend add', () => {
       return db.index('user', user).then(res => {
-        db._indexer.user.add.should.have.callCount(1)
-        db._indexer.user.add.should.have.been.calledWith(user)
+        db.namespaces.user.indexer.add.should.have.callCount(1)
+        db.namespaces.user.indexer.add.should.have.been.calledWith(user)
       })
     })
 
@@ -156,13 +156,13 @@ describe('Datastore', () => {
   })
 
   describe('filter', () => {
-    const namespaces = {user: new Elasticlunr(['name'], '_id')}
+    const namespaces = {user: {indexer: new Elasticlunr(['name'], '_id')}}
     const db = new Datastore({db: 'example', namespaces})
     // we need to stub the index load
     sinon.stub(db._storage, 'readDoc').callsFake(() => Promise.resolve({}))
 
     // stub the search call to spy on it
-    sinon.stub(db._indexer.user, 'search').callsFake(() => Promise.resolve({}))
+    sinon.stub(db.namespaces.user.indexer, 'search').callsFake(() => Promise.resolve({}))
 
     it('should throw error for unknown namespace', () => {
       expect(() => {
@@ -172,8 +172,8 @@ describe('Datastore', () => {
 
     it('should call index backend search', () => {
       return db.filter('user', 'some query').then(res => {
-        db._indexer.user.search.should.have.callCount(1)
-        db._indexer.user.search.should.have.been.calledWith('some query')
+        db.namespaces.user.indexer.search.should.have.callCount(1)
+        db.namespaces.user.indexer.search.should.have.been.calledWith('some query')
       })
     })
 
