@@ -1,9 +1,13 @@
 {
-  "name": "clob-db",
+  "name": "@cloudblob/store",
   "version": "1.0.0",
   "description": "Provider agnostic searchable document store that runs on cloud object storage",
   "author": "Ian Loubser <loubser.ian@gmail.com>",
+  "repository": "https://github.com/cloudblob/cloudblob-store",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "aws-sdk": "^2.437.0",
     "bluebird": "^3.5.4",
@@ -31,7 +35,6 @@
   },
   "scripts": {
     "test": "nyc mocha --require @babel/register tests/",
-    "build": "babel ./src -d lib",
-    "start": "node server/index.js"
+    "build": "babel ./src -d lib"
   }
 }
