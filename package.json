@@ -40,6 +40,7 @@
     "test": "nyc mocha --require @babel/register tests/",
     "test:report": "nyc report --reporter=text-lcov",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "build": "babel ./src -d lib"
+    "build": "babel ./src -d lib",
+    "prepublish": "yarn build"
   }
 }
