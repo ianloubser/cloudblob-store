@@ -1,5 +1,8 @@
 # cloudblob-store
 
+[![Build status](https://api.travis-ci.com/cloudblob/cloudblob-store.svg?branch=master)](https://travis-ci.com/cloudblob/cloudblob-store/)
+[![Coverage Status](https://coveralls.io/repos/github/cloudblob/cloudblob-store/badge.svg?branch=master)](https://coveralls.io/github/cloudblob/cloudblob-store?branch=master)
+
 Node document store interface using cloud persistent storage as backend(Azure Blob storage, AWS S3 or Google Cloud Storage).
 
 ## Overview
