@@ -5,6 +5,7 @@
   "author": "Ian Loubser <loubser.ian@gmail.com>",
   "repository": "https://github.com/cloudblob/cloudblob-store",
   "license": "MIT",
+  "main": "index.js",
   "publishConfig": {
     "access": "public"
   },
