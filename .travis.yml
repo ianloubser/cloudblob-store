@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "8.15"
+
+install:
+  - yarn install
+
+script:
+  - yarn test
+
+after_success:
+  - yarn coverage

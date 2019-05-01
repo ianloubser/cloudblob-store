@@ -29,14 +29,17 @@
     "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^4.2.0",
+    "coveralls": "^3.0.3",
     "mocha": "^6.1.2",
+    "mocha-lcov-reporter": "^1.3.0",
     "nyc": "^14.0.0",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0"
   },
   "scripts": {
     "test": "nyc mocha --require @babel/register tests/",
-    "test:report": "nyc report --reporter=html",
+    "test:report": "nyc report --reporter=text-lcov",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
     "build": "babel ./src -d lib"
   }
 }
