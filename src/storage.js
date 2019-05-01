@@ -44,15 +44,28 @@ class MockStore extends StorageBackend {
     return Promise.resolve(doc)
   }
 
+  headDoc = (bucket, key) => {
+    if (!this._mock[bucket])
+      this._mock[bucket] = {}
+      
+    return Promise.resolve(Boolean(this._mock[bucket][key]))
+  }
+
   readDoc = (bucket, key) => {
-    if (this._mock[bucket] && this._mock[bucket][key]) {
+    if (!this._mock[bucket])
+      this._mock[bucket] = {}
+
+    if (this._mock[bucket][key])
       return Promise.resolve(this._mock[bucket][key])
-    } else
-      return Promise.resolve({})
+    else
+      return Promise.reject('Key does not exist')
   }
 
   listDocs = (bucket, prefix, max) => {
-    const data = this._mock
+    if (!this._mock[bucket])
+      this._mock[bucket] = {}
+    
+    const data = Object.values(this._mock[bucket])
     // Object.entries(this)
     return Promise.resolve({
       next: null,
