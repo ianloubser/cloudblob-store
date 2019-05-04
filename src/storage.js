@@ -106,7 +106,7 @@ class AWS extends StorageBackend {
       .then((data) => {
         return JSON.parse(Buffer.from(data.Body).toString())
       }).catch((err) => {
-        console.log("Could not read file: "+err)
+        console.log("Could not read file "+key, err)
         return {}
       })
   }
@@ -118,7 +118,7 @@ class AWS extends StorageBackend {
         // if (data.ETag)
         return doc
       }).catch((err) => {
-        console.log("Could not write file: "+err)
+        console.log("Could not write file "+key, err)
         return {}
       })
   }

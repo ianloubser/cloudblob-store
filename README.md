@@ -3,25 +3,30 @@
 [![Build status](https://api.travis-ci.com/cloudblob/cloudblob-store.svg?branch=master)](https://travis-ci.com/cloudblob/cloudblob-store/)
 [![Coverage Status](https://coveralls.io/repos/github/cloudblob/cloudblob-store/badge.svg?branch=master)](https://coveralls.io/github/cloudblob/cloudblob-store?branch=master)
 
-Node document store interface using cloud persistent storage as backend(Azure Blob storage, AWS S3 or Google Cloud Storage).
+Node document store built on cloud persistent storage - Azure Blob storage, AWS S3 or Google Cloud Storage.
 
 ## Overview
 
-Use `cloudblob-store` as a hobbyist, for prototyping or even for scaling up & out. Our platform is completely open source, so when you find our service doesn't offer enough, export your project and host our stack yourself!
+Use `cloudblob-store` as a hobbyist, for prototyping or even for scaling (this would require a propper caching strategy to increase request time).
 
-Offers indexing & search capabilities out the box through the help for libraries like, FlexSearch, Bulksearch and Elasticlunr.
+Offers indexing & search capabilities out the box through the help of libraries like, FlexSearch, Bulksearch and Elasticlunr.
 
 ## Why
-Provider agnostic. You can use any of the big cloud service providers like Azure, AWS or Google Cloud. If none of these suit you, you can also host your own storage solution using libraries like MinIO.
+The cloudblob stack was developed to provide a lightweight datastore solution for high read and low write applications that's also very easy to implement and also extremely cost effective.
+
+
+One of the main aims was to avoid vendor lock-in. You can use any of the big cloud service providers like Azure, AWS or Google Cloud. If none of these suit you, you can also host your own storage solution using libraries like MinIO.
+
+The interface of the datastore client is simple enough. If the latency of cloud storage doesn't work for you, just wrap a mongo client with the same interface.
 
 ## Example Usage
 
 ```javascript
 var Datastore = require('@cloudblob/store');
-var AWS = require('@cloudblob/store/storage');
+var AWS = require('@cloudblob/store/storage').AWS;
 
 
-var config = {
+var awsConfig = {
     // AWS-sdk s3 client parameters
     accessKeyId: "xxx...",
     secretAccessKey: "xxx..."
@@ -30,12 +35,15 @@ var config = {
 const store = new Datastore({
   // the db name here is the bucket name
   db: 'example-database',
-  storage: new AWS(config),
+  storage: new AWS(awsConfig),
   // specify the namespaces and their indexer class, each namespace can use a different indexer
   // so you can optimise for different types of data
   namespaces: {
     // the parameters for the indexer are (fields array, unique ref)
-    'user': new Flexsearch(['name', 'about', 'age'], 'ref')
+    user:  {
+        indexer: new Flexsearch(['name', 'about', 'age'], '_id'),
+        ref: "_id"
+    }
   }
 });
 
@@ -60,4 +68,3 @@ store.filter('user', 'John Doe').then(console.log)
 // list namespace documents as a paginated response
 store.list('user').then(console.log)
 ```
-

@@ -1,4 +1,5 @@
 import elasticlunr from 'elasticlunr'
+import flex from 'flexsearch'
 
 class Elasticlunr {
 
@@ -64,22 +65,68 @@ class Elasticlunr {
 }
 
 
-class Bulksearch {
-  constructor() {
-    this._indexPath = 'bulk_index.json'
-    this._index = null
-  }
-}
-
-
 class Flexsearch {
-  constructor() {
+  constructor(fields, ref) {
     this._indexPath = 'flex_index.json'
     this._index = null
+
+    this._fields = fields
+    this._ref = ref
+
+    // whether there are any unsaved indexes
+    this._dirty = false
+  }
+
+  isDirty = () => {
+    return this._dirty
+  }
+
+  setClean = () => {
+    this._dirty = false
+  }
+
+  reset = () => {
+    this._index = null
+  }
+
+  load = (body) => {
+    try {
+      this._index = new flex();
+      this._index.import(body)
+    } catch {
+      this.init(this._fields, this._ref)
+    }
+  }
+
+  init = (fields, ref) => {
+    this._index = flex.create({
+      tokenize: 'forward',
+      cache: false
+    })
+  }
+
+  serialize = () => {
+    if (!this._index)
+      throw Error("Tried to serialize an index not loaded yet")
+    
+    return this._index.export()
+  }
+
+  add = (doc) => {
+    this._dirty = true
+    for (let i=0; i<this._fields.length; i++) {
+      // indexing the fields separately results in smaller index & faster searching
+      this._index.add(doc[this._ref], doc[this._fields[i]])
+    }
+  }
+
+  search = (query) => {
+    // returns a list of keys
+    return this._index.search(query)
   }
 }
 
 
 export {
-  Flexsearch, Bulksearch, Elasticlunr
+  Flexsearch, Elasticlunr
 }
