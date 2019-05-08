@@ -1,6 +1,6 @@
 {
   "name": "@cloudblob/store",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Provider agnostic searchable document store that runs on cloud object storage",
   "author": "Ian Loubser <loubser.ian@gmail.com>",
   "repository": "https://github.com/cloudblob/cloudblob-store",
@@ -13,7 +13,6 @@
     "aws-sdk": "^2.437.0",
     "elasticlunr": "^0.9.5",
     "flexsearch": "^0.6.22",
-    "node-cache": "^4.2.0",
     "uuid": "^3.3.2",
     "uuid-parse": "^1.1.0"
   },
@@ -32,6 +31,7 @@
     "coveralls": "^3.0.3",
     "mocha": "^6.1.2",
     "mocha-lcov-reporter": "^1.3.0",
+    "node-cache": "^4.2.0",
     "nyc": "^14.0.0",
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0"
