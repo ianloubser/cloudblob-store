@@ -106,8 +106,7 @@ class AWS extends StorageBackend {
       .then((data) => {
         return JSON.parse(Buffer.from(data.Body).toString())
       }).catch((err) => {
-        console.log("Could not read file "+key, err)
-        return {}
+        throw new Error("Key not found")
       })
   }
 
