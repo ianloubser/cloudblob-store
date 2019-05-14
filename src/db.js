@@ -247,6 +247,8 @@ class Datastore {
 
       return this._storage.readDoc(this._bucket, key).then(docBody => {
         self.namespaces[namespace].indexer.load(docBody)
+      }).catch(err => {
+        self.namespaces[namespace].indexer.load()
       })
     } else {
       // index has already been loaded, just return it as a promise
