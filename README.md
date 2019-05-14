@@ -2,8 +2,8 @@
 
 [![Build status](https://api.travis-ci.com/cloudblob/cloudblob-store.svg?branch=master)](https://travis-ci.com/cloudblob/cloudblob-store/)
 [![Coverage Status](https://coveralls.io/repos/github/cloudblob/cloudblob-store/badge.svg?branch=master)](https://coveralls.io/github/cloudblob/cloudblob-store?branch=master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/eaa8b834e9fa32dfdf1c/maintainability)](https:/
-/codeclimate.com/github/cloudblob/cloudblob-store/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/eaa8b834e9fa32dfdf1c/maintainability)](https://codeclimate.com/github/cloudblob/cloudblob-store/maintainability)
+
 
 Node document store built on cloud persistent storage - currently only AWS S3 is supported. Hope to add Azure Blob storage and Google Cloud Storage soon.
 
