@@ -75,15 +75,15 @@ describe('Datastore', () => {
   /**
    * Tests for operations on documents/entities
    */
-  describe('exists', () => {
+  describe('meta', () => {
     const db = new Datastore({db: 'example'})
     sinon.stub(db._storage, 'headDoc').callsFake(() => {
-      return Promise.resolve(true)
+      return Promise.resolve({_id: "1"})
     })
 
     it('should call storage backend head method', () => {
-      return db.exists('user', '1234').then(res => {
-        expect(res).to.be.true
+      return db.meta('user', '1234').then(res => {
+        expect(res._id).to.be.equal('1')
         db._storage.headDoc.should.have.been.calledWith('example', 'user/1234/entity.json')
       })
     })

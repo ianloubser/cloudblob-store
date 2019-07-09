@@ -105,13 +105,13 @@ class Datastore {
   }
 
   /**
-   * Only check if entity exists in store.
+   * Gets the entity meta or resolves null if entity doesn't exist.
    * 
    * @param {String} namespace Namespace to check for stored document
    * @param {String} key The key of the entity
    * @returns {Promise}
    */
-  exists = (namespace, key) => {
+  meta = (namespace, key) => {
     // return a check for entity existence
     const fullKey = this._storage._buildKey(namespace, key)
     return this._storage.headDoc(this._bucket, fullKey)

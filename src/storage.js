@@ -48,7 +48,7 @@ class MockStore extends StorageBackend {
     if (!this._mock[bucket])
       this._mock[bucket] = {}
       
-    return Promise.resolve(Boolean(this._mock[bucket][key]))
+    return Promise.resolve(this._mock[bucket][key])
   }
 
   readDoc = (bucket, key) => {
@@ -93,9 +93,9 @@ class AWS extends StorageBackend {
     return new Promise((resolve, reject) => {
       this._connection.headObject({Key: key, Bucket: bucket}, (err, data) => {
         if (data) {
-          resolve(true)
+          resolve(data.Metadata)
         } else{
-          resolve(false)
+          resolve(null)
         }
       })
     })
@@ -118,7 +118,7 @@ class AWS extends StorageBackend {
         return doc
       }).catch((err) => {
         console.log("Could not write file "+key, err)
-        return {}
+        return null
       })
   }
 
