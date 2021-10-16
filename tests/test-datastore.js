@@ -264,7 +264,7 @@ describe('Datastore', () => {
         return Promise.resolve({fake: true})
       })
 
-      return db.filter('user', 'some query', false).then(res => {
+      return db.filter('user', 'some query', true).then(res => {
         stub.should.have.callCount(5)
       })
     })
