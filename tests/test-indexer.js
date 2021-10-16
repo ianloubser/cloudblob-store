@@ -1,10 +1,12 @@
-import sinon from 'sinon'
-import sinonChai from 'sinon-chai'
-import chai, { expect } from 'chai'
-import { Storage, AWS } from '../src/storage'
+const sinon = require('sinon')
+const sinonChai = require('sinon-chai')
+const chai = require('chai')
+const { Storage, AWS } = require('../lib/storage')
 
 chai.should();
 chai.use(sinonChai);
+
+const expect = chai.expect
 
 describe('Elasticlunr', () => {
   describe('constructor', () => {  

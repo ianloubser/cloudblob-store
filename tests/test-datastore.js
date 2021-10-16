@@ -1,13 +1,13 @@
-import sinon from 'sinon'
-import sinonChai from 'sinon-chai'
-import chai, { expect } from 'chai'
-import Datastore from '../src/db';
-import { AWS, MockStore } from '../src/storage'
-import { Elasticlunr } from '../src/indexer'
+const sinon = require('sinon')
+const sinonChai = require('sinon-chai')
+const chai = require('chai')
+const Datastore = require('../lib/db')
+const { AWS, MockStore } = require('../lib/storage')
+const { Elasticlunr } = require('../lib/indexer')
 
 chai.should();
 chai.use(sinonChai);
-
+const expect = chai.expect
 
 describe('Datastore', () => {
 
@@ -169,7 +169,7 @@ describe('Datastore', () => {
       })
     })
 
-    it('should load from storage and cache if cache miss', () => {
+    it('should load = require(storage and cache if cache miss', () => {
       const tmp = new Datastore({db: 'example', storage: s3, namespaces, cache:mockCache})
       // sinon.stub(mockCache, 'set').callsFake((...args) => {
 
@@ -184,11 +184,11 @@ describe('Datastore', () => {
       })
     })
 
-    it('should load from cache if present', () => {
+    it('should load = require(cache if present', () => {
       const tmp = new Datastore({db: 'example', namespaces, cache:mockCache})
 
       return tmp.get('user', 1).then(res => {
-        // make sure the backend wasn't called since loaded from cache
+        // make sure the backend wasn't called since loaded = require(cache
         s3.readDoc.should.have.callCount(0)
 
         expect(res.user).to.be.equal('John')
