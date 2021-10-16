@@ -1,9 +1,7 @@
 const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 const chai = require('chai')
-const { Datastore } = require('../lib/db')
-const { AWS, MockStore } = require('../lib/storage')
-const { Elasticlunr } = require('../lib/indexer')
+const { Datastore, Elasticlunr, storage } = require('../lib')
 
 chai.should();
 chai.use(sinonChai);
@@ -13,7 +11,7 @@ describe('Datastore', () => {
 
   describe('constructor', () => {
     it('constructor overrides', () => {
-      class Example extends MockStore {}
+      class Example extends storage.MockStore {}
       class Indexer extends Elasticlunr {}
 
       let ex = new Example()
@@ -114,9 +112,9 @@ describe('Datastore', () => {
         
         // make sure the key was generated correctly
         // expect(args[1]).to.be.undefined
-        expect(/user\/([a-f0-9]{2}){16}\/entity\.json/i.test(args[1])).to.be.true
+        expect(/user\/([a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12})\/entity\.json/i.test(args[1])).to.be.true
       })
-      
+
       db.put('user', user)
     })
 
@@ -136,7 +134,7 @@ describe('Datastore', () => {
   })
 
   describe('get', () => {
-    const s3 = new AWS()
+    const s3 = new storage.AWS()
     const mockCache = {
       get: (key, cb) => {
         if (key === 'user/1')
@@ -563,7 +561,7 @@ describe('Datastore', () => {
     const db = new Datastore({db: 'db'})
 
     it('should return a hex uuid4', () => {
-      var hexStr = /([a-f0-9]{2}){16}/i
+      var hexStr = /[a-f0-9]{8}-?[a-f0-9]{4}-?4[a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}/
       const id = db._generateId()
       expect(hexStr.test(id)).to.be.true
     })

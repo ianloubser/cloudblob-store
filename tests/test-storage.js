@@ -1,6 +1,6 @@
 const sinonChai = require('sinon-chai')
 const chai = require('chai')
-const { AWS } = require('../lib/storage')
+const { AWS } = require('../lib')
 
 chai.should();
 chai.use(sinonChai);

@@ -5,16 +5,15 @@
   "author": "Ian Loubser <loubser.ian@gmail.com>",
   "repository": "https://github.com/cloudblob/cloudblob-store",
   "license": "MIT",
-  "main": "index.js",
+  "main": "lib/index.js",
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
-    "aws-sdk": "^2.437.0",
+    "aws-sdk": "^2.1009.0",
     "elasticlunr": "^0.9.5",
-    "flexsearch": "^0.6.22",
-    "uuid": "^3.3.2",
-    "uuid-parse": "^1.1.0"
+    "flexsearch": "^0.7.21",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -29,7 +28,6 @@
   "scripts": {
     "test": "nyc mocha tests/",
     "test:report": "nyc report --reporter=text-lcov",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "prepublish": "npm build"
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   }
 }

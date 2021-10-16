@@ -31,10 +31,7 @@ npm install @cloudblob/store
 ## Example Usage
 
 ```javascript
-var Datastore = require('@cloudblob/store');
-var AWS = require('@cloudblob/store/lib/storage').AWS;
-var Flexsearch = require('@cloudblob/store/lib/indexer').Flexsearch;
-
+const {Datastore, AWS, Flexsearch} = require('@cloudblob/store');
 
 var awsConfig = {
     // AWS-sdk s3 client parameters
