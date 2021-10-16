@@ -1,8 +1,8 @@
 # cloudblob-store
 
-[![Build status](https://api.travis-ci.com/cloudblob/cloudblob-store.svg?branch=master)](https://travis-ci.com/cloudblob/cloudblob-store/)
-[![Coverage Status](https://coveralls.io/repos/github/cloudblob/cloudblob-store/badge.svg?branch=master)](https://coveralls.io/github/cloudblob/cloudblob-store?branch=master)
-[![Maintainability](https://api.codeclimate.com/v1/badges/eaa8b834e9fa32dfdf1c/maintainability)](https://codeclimate.com/github/cloudblob/cloudblob-store/maintainability)
+[![Build status](https://api.travis-ci.com/ianloubser/cloudblob-store.svg?branch=master)](https://travis-ci.com/ianloubser/cloudblob-store/)
+[![Coverage Status](https://coveralls.io/repos/github/ianloubser/cloudblob-store/badge.svg?branch=master)](https://coveralls.io/github/ianloubser/cloudblob-store?branch=master)
+[![Maintainability](https://api.codeclimate.com/v1/badges/eaa8b834e9fa32dfdf1c/maintainability)](https://codeclimate.com/github/ianloubser/cloudblob-store/maintainability)
 
 
 Node document store built on cloud persistent storage - currently only AWS S3 is supported. Hope to add Azure Blob storage and Google Cloud Storage soon.
@@ -18,7 +18,7 @@ Sometimes you need a data storage backend which is rarely updated and frequently
 
 The cloudblob stack was developed to provide a lightweight datastore solution for high read and low write applications that's also very easy to implement and also extremely cost effective. Combine this with caching and indexing workers to provide a scaleable eventually consistent data store.
 
-One of the main aims is to avoid vendor lock-in. If you want to host your own stack have a look at [cloudblob-server](https://github.com/cloudblob/cloudblob-server) or the serverless implementation, [cloudblob-api-serverless](https://github.com/cloudblob/cloudblob-api-serverless).
+One of the main aims is to avoid vendor lock-in. If you want to host your own stack have a look at [cloudblob-server](https://github.com/cloudblob/cloudblob-server).
 
 The interface of the datastore client is simple enough. If the latency of cloud storage doesn't work for you, and you've already tried caching. You could always just wrap a mongo client with the same interface.
 
