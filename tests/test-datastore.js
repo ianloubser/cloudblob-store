@@ -1,7 +1,7 @@
 const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 const chai = require('chai')
-const Datastore = require('../lib/db')
+const { Datastore } = require('../lib/db')
 const { AWS, MockStore } = require('../lib/storage')
 const { Elasticlunr } = require('../lib/indexer')
 
